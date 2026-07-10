@@ -83,11 +83,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <input type="email" name="email" placeholder="admin@gmail.com" required>
 
       <label>Senha</label>
-      <input type="password" name="senha" placeholder="1234" required>
+      <div class="password-container">
+        <input type="password" name="senha" id="senhaLogin" placeholder="1234" required>
+        <button type="button" class="toggle-password" id="toggleSenhaLogin" title="Mostrar/Ocultar senha">👁️</button>
+      </div>
 
       <button class="btn" type="submit">Entrar</button>
       <a class="btn-secondary" href="cadastro.php" style="display:inline-block; width:auto; margin-top:10px;">Criar conta</a>
     </form>
   </div>
+  <script>
+    // Toggle mostrar/ocultar senha no login
+    const toggleSenhaLogin = document.getElementById('toggleSenhaLogin');
+    const senhaLoginInput = document.getElementById('senhaLogin');
+
+    toggleSenhaLogin.addEventListener('click', (e) => {
+      e.preventDefault();
+      const tipo = senhaLoginInput.type === 'password' ? 'text' : 'password';
+      senhaLoginInput.type = tipo;
+      toggleSenhaLogin.textContent = tipo === 'password' ? '👁️' : '👁️‍🗨️';
+    });
+  </script>
 </body>
 </html>

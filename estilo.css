@@ -480,3 +480,91 @@ th { background: #f9fafb; }
     width:140px;
     height:auto;
 }
+
+/* ===== PASSWORD VALIDATION FEEDBACK ===== */
+.hint {
+    font-size: 11px;
+    color: #999;
+    font-weight: normal;
+    margin-left: 5px;
+}
+
+.password-feedback {
+    font-size: 12px;
+    margin: -8px 0 12px 0;
+    padding: 10px 12px;
+    border-radius: 4px;
+    display: none;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.password-feedback strong {
+    display: block;
+    margin-bottom: 2px;
+    font-size: 13px;
+}
+
+.password-feedback.error {
+    display: block;
+    background: #fee;
+    color: #c33;
+    border-left: 4px solid #c33;
+    border-radius: 4px;
+}
+
+.password-feedback.success {
+    display: block;
+    background: #efe;
+    color: #3c3;
+    border-left: 4px solid #3c3;
+    border-radius: 4px;
+}
+
+button[type="submit"]:disabled {
+    background: #cccccc !important;
+    cursor: not-allowed;
+}
+
+button[type="submit"]:disabled:hover {
+    background: #cccccc !important;
+}
+
+/* ===== PASSWORD CONTAINER WITH TOGGLE ===== */
+.password-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.password-container input {
+    flex: 1;
+    margin-bottom: 0;
+    padding-right: 40px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 5px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+}
+
+.toggle-password:hover {
+    background: rgba(76, 175, 80, 0.1);
+    color: var(--color-primary);
+}
+
+.toggle-password:active {
+    transform: scale(0.95);
+}
