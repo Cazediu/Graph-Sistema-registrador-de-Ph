@@ -509,7 +509,6 @@ th { background: #f9fafb; }
     display: block;
     background: #fee;
     color: #c33;
-    border-left: 4px solid #c33;
     border-radius: 4px;
 }
 
@@ -517,7 +516,6 @@ th { background: #f9fafb; }
     display: block;
     background: #efe;
     color: #3c3;
-    border-left: 4px solid #3c3;
     border-radius: 4px;
 }
 
@@ -546,25 +544,33 @@ button[type="submit"]:disabled:hover {
 
 .toggle-password {
     position: absolute;
-    right: 10px;
+    right: 8px;
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 18px;
-    padding: 5px 8px;
+    padding: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #666;
     transition: all 0.2s ease;
     border-radius: 4px;
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
 }
 
 .toggle-password:hover {
     background: rgba(76, 175, 80, 0.1);
-    color: var(--color-primary);
 }
 
 .toggle-password:active {
     transform: scale(0.95);
+}
+
+.password-icon {
+    width: 20px;
+    height: 20px;
+    display: block;
 }

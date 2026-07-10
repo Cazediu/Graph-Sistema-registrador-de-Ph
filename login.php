@@ -80,12 +80,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <form method="POST">
       <label>Email</label>
-      <input type="email" name="email" placeholder="admin@gmail.com" required>
+      <input type="email" name="email" placeholder="Digite seu e-mail" required>
 
       <label>Senha</label>
       <div class="password-container">
-        <input type="password" name="senha" id="senhaLogin" placeholder="1234" required>
-        <button type="button" class="toggle-password" id="toggleSenhaLogin" title="Mostrar/Ocultar senha">👁️</button>
+        <input type="password" name="senha" id="senhaLogin" placeholder="Digite sua senha" required>
+        <button type="button" class="toggle-password" id="toggleSenhaLogin" title="Mostrar/Ocultar senha">
+          <img src="imagens/hidden.png" alt="Mostrar senha" class="password-icon">
+        </button>
       </div>
 
       <button class="btn" type="submit">Entrar</button>
@@ -101,7 +103,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       e.preventDefault();
       const tipo = senhaLoginInput.type === 'password' ? 'text' : 'password';
       senhaLoginInput.type = tipo;
-      toggleSenhaLogin.textContent = tipo === 'password' ? '👁️' : '👁️‍🗨️';
+      const img = toggleSenhaLogin.querySelector('img');
+      img.src = tipo === 'password' ? 'imagens/hidden.png' : 'imagens/eye.png';
+      img.alt = tipo === 'password' ? 'Mostrar senha' : 'Ocultar senha';
     });
   </script>
 </body>

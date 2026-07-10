@@ -76,14 +76,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <label>Senha <span class="hint">(mínimo 8 caracteres)</span></label>
             <div class="password-container">
                 <input type="password" name="senha" id="senha" placeholder="Escolha uma senha" required>
-                <button type="button" class="toggle-password" id="toggleSenha" title="Mostrar/Ocultar senha">👁️</button>
+                <button type="button" class="toggle-password" id="toggleSenha" title="Mostrar/Ocultar senha">
+                    <img src="imagens/hidden.png" alt="Mostrar senha" class="password-icon">
+                </button>
             </div>
             <div id="senhaLengthFeedback" class="password-feedback"></div>
 
             <label>Confirmar senha</label>
             <div class="password-container">
                 <input type="password" name="confirm_senha" id="confirm_senha" placeholder="Repita a senha" required>
-                <button type="button" class="toggle-password" id="toggleConfirm" title="Mostrar/Ocultar senha">👁️</button>
+                <button type="button" class="toggle-password" id="toggleConfirm" title="Mostrar/Ocultar senha">
+                    <img src="imagens/hidden.png" alt="Mostrar senha" class="password-icon">
+                </button>
             </div>
             <div id="senhaMatchFeedback" class="password-feedback"></div>
 
@@ -167,14 +171,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 e.preventDefault();
                 const tipo = senhaInput.type === 'password' ? 'text' : 'password';
                 senhaInput.type = tipo;
-                toggleSenha.textContent = tipo === 'password' ? '👁️' : '👁️‍🗨️';
+                const img = toggleSenha.querySelector('img');
+                img.src = tipo === 'password' ? 'imagens/hidden.png' : 'imagens/eye.png';
+                img.alt = tipo === 'password' ? 'Mostrar senha' : 'Ocultar senha';
             });
 
             toggleConfirm.addEventListener('click', (e) => {
                 e.preventDefault();
                 const tipo = confirmInput.type === 'password' ? 'text' : 'password';
                 confirmInput.type = tipo;
-                toggleConfirm.textContent = tipo === 'password' ? '👁️' : '👁️‍🗨️';
+                const img = toggleConfirm.querySelector('img');
+                img.src = tipo === 'password' ? 'imagens/hidden.png' : 'imagens/eye.png';
+                img.alt = tipo === 'password' ? 'Mostrar senha' : 'Ocultar senha';
             });
         </script>
 
