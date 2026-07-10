@@ -4,8 +4,10 @@ require 'auth.php';
 
 exigir_login();
 
-$valor_ph = trim($_GET['valor_ph'] ?? '');
-$temperatura = trim($_GET['temperatura'] ?? '');
+$valor_ph_min = trim($_GET['valor_ph_min'] ?? '');
+$valor_ph_max = trim($_GET['valor_ph_max'] ?? '');
+$temperatura_min = trim($_GET['temperatura_min'] ?? '');
+$temperatura_max = trim($_GET['temperatura_max'] ?? '');
 $nome_liquido = trim($_GET['nome_liquido'] ?? '');
 $observacao = trim($_GET['observacao'] ?? '');
 $data_medicao = trim($_GET['data_medicao'] ?? '');
@@ -27,48 +29,49 @@ WHERE usuario_id = ?
 $params = [$usuario_id];
 $types = 'i';
 
-if ($valor_ph !== '') {
-
-    $sql .= " AND CAST(valor_ph AS CHAR) LIKE ?";
-
-    $params[] = "%$valor_ph%";
-
-    $types .= 's';
+// Filtro de pH mínimo
+if ($valor_ph_min !== '' && is_numeric($valor_ph_min)) {
+    $sql .= " AND valor_ph >= ?";
+    $params[] = (float)$valor_ph_min;
+    $types .= 'd';
 }
 
-if ($temperatura !== '') {
+// Filtro de pH máximo
+if ($valor_ph_max !== '' && is_numeric($valor_ph_max)) {
+    $sql .= " AND valor_ph <= ?";
+    $params[] = (float)$valor_ph_max;
+    $types .= 'd';
+}
 
-    $sql .= " AND CAST(temperatura AS CHAR) LIKE ?";
+// Filtro de temperatura mínima
+if ($temperatura_min !== '' && is_numeric($temperatura_min)) {
+    $sql .= " AND temperatura >= ?";
+    $params[] = (float)$temperatura_min;
+    $types .= 'd';
+}
 
-    $params[] = "%$temperatura%";
-
-    $types .= 's';
+// Filtro de temperatura máxima
+if ($temperatura_max !== '' && is_numeric($temperatura_max)) {
+    $sql .= " AND temperatura <= ?";
+    $params[] = (float)$temperatura_max;
+    $types .= 'd';
 }
 
 if ($nome_liquido !== '') {
-
     $sql .= " AND nome_liquido LIKE ?";
-
     $params[] = "%$nome_liquido%";
-
     $types .= 's';
 }
 
 if ($observacao !== '') {
-
     $sql .= " AND observacao LIKE ?";
-
     $params[] = "%$observacao%";
-
     $types .= 's';
 }
 
 if ($data_medicao !== '') {
-
     $sql .= " AND DATE(data_medicao) = ?";
-
     $params[] = $data_medicao;
-
     $types .= 's';
 }
 
@@ -137,26 +140,60 @@ $resultado = mysqli_stmt_get_result($stmt);
 
             <div>
 
-                <label>Valor pH</label>
+                <label>Valor pH (Mínimo)</label>
 
                 <input
-                    type="text"
-                    name="valor_ph"
-                    placeholder="Digite o valor do pH"
-                    value="<?php echo htmlspecialchars($valor_ph); ?>"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    max="14"
+                    name="valor_ph_min"
+                    placeholder="Ex: 0"
+                    value="<?php echo htmlspecialchars($valor_ph_min); ?>"
                 >
 
             </div>
 
             <div>
 
-                <label>Temperatura</label>
+                <label>Valor pH (Máximo)</label>
 
                 <input
-                    type="text"
-                    name="temperatura"
-                    placeholder="Digite a temperatura"
-                    value="<?php echo htmlspecialchars($temperatura); ?>"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    max="14"
+                    name="valor_ph_max"
+                    placeholder="Ex: 14"
+                    value="<?php echo htmlspecialchars($valor_ph_max); ?>"
+                >
+
+            </div>
+
+            <div>
+
+                <label>Temperatura Mínima (°C)</label>
+
+                <input
+                    type="number"
+                    step="0.1"
+                    name="temperatura_min"
+                    placeholder="Ex: 20"
+                    value="<?php echo htmlspecialchars($temperatura_min); ?>"
+                >
+
+            </div>
+
+            <div>
+
+                <label>Temperatura Máxima (°C)</label>
+
+                <input
+                    type="number"
+                    step="0.1"
+                    name="temperatura_max"
+                    placeholder="Ex: 30"
+                    value="<?php echo htmlspecialchars($temperatura_max); ?>"
                 >
 
             </div>

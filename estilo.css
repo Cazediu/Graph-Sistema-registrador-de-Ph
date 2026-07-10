@@ -574,3 +574,43 @@ button[type="submit"]:disabled:hover {
     height: 20px;
     display: block;
 }
+
+/* ===== LOGIN TITLE CENTRALIZATION ===== */
+.form-card .login-title,
+.form-card h2 {
+    text-align: center !important;
+    margin: 0 auto 25px auto !important;
+    padding: 0 !important;
+    font-size: 28px !important;
+    font-weight: 700 !important;
+    color: var(--color-text) !important;
+    width: 100% !important;
+    display: block !important;
+    letter-spacing: -0.5px;
+}
+
+/* ===== LOGIN BUTTONS CENTRALIZATION ===== */
+.login-buttons {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 12px !important;
+    flex-wrap: wrap !important;
+    margin-top: 20px !important;
+}
+
+.login-buttons .btn {
+    width: auto !important;
+    margin-top: 0 !important;
+    padding: 12px 32px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+}
+
+.login-buttons .btn-secondary {
+    width: auto !important;
+    margin-top: 0 !important;
+    padding: 12px 32px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+}

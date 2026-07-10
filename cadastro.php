@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <div id="senhaMatchFeedback" class="password-feedback"></div>
 
-            <div class="button-group">
+            <div class="login-buttons">
                 <button class="btn" type="submit" id="submitBtn">Criar conta</button>
                 <a class="btn-secondary" href="login.php">Cancelar</a>
             </div>

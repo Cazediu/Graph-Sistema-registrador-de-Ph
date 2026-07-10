@@ -71,8 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   </div>
   <div class="form-card">
-    <h2>Entrar no sistema</h2>
-    <p class="small">Use o email e senha para acessar as medições de pH.</p>
+    <h2 class="login-title">Sistema Registrador de pH</h2>
 
     <?php if ($erro): ?>
       <div class="msg"><?php echo htmlspecialchars($erro); ?></div>
@@ -90,8 +89,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </button>
       </div>
 
-      <button class="btn" type="submit">Entrar</button>
-      <a class="btn-secondary" href="cadastro.php" style="display:inline-block; width:auto; margin-top:10px;">Criar conta</a>
+      <div class="login-buttons">
+        <button class="btn" type="submit">Entrar</button>
+        <a class="btn-secondary" href="cadastro.php">Criar conta</a>
+      </div>
     </form>
   </div>
   <script>
