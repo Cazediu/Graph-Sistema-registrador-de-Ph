@@ -4,44 +4,50 @@ require 'auth.php';
 exigir_login();
 
 $usuario_id = $_SESSION['usuario_id'];
-$mensagem = '';
 $erro = '';
+$csrf_token = gerar_csrf_token();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $valor_ph = trim($_POST['valor_ph'] ?? '');
-    $observacao = trim($_POST['observacao'] ?? '');
-    $temperatura = trim($_POST['temperatura'] ?? '');
-    $nome_liquido = trim($_POST['nome_liquido'] ?? '');
-    $data_medicao = trim($_POST['data_medicao'] ?? '');
-
-    // Validação do pH
-    if ($valor_ph === '' || !is_numeric($valor_ph)) {
-        $erro = 'Informe um valor de pH válido (número).';
-    } elseif ((float)$valor_ph < 0 || (float)$valor_ph > 14) {
-        $erro = 'O valor de pH deve estar entre 0 e 14.';
-    } elseif ($temperatura !== '' && !is_numeric($temperatura)) {
-        $erro = 'Temperatura deve ser um número válido.';
+    if (!isset($_POST['csrf_token']) || !validar_csrf_token($_POST['csrf_token'])) {
+        $erro = 'Sessão inválida. Tente novamente.';
     } else {
-        // Se data não foi informada, usa a data/hora atual
-        if (empty($data_medicao)) {
-            $data_medicao = date('Y-m-d H:i:s');
-        } else {
-            // Converte para formato datetime
-            $data_medicao = date('Y-m-d H:i:s', strtotime($data_medicao));
-        }
+        $valor_ph = trim($_POST['valor_ph'] ?? '');
+        $observacao = trim($_POST['observacao'] ?? '');
+        $temperatura = trim($_POST['temperatura'] ?? '');
+        $amostra = trim($_POST['amostra'] ?? '');
+        $data_medicao = trim($_POST['data_medicao'] ?? '');
 
-        $sql = 'INSERT INTO medicoes_ph (usuario_id, valor_ph, temperatura, nome_liquido, observacao, data_medicao) VALUES (?, ?, ?, ?, ?, ?)';
-        $stmt = mysqli_prepare($conexao, $sql);
-        mysqli_stmt_bind_param($stmt, 'iddss', $usuario_id, $valor_ph, $temperatura, $nome_liquido, $observacao, $data_medicao);
-        $temp_valor_ph = (float)$valor_ph;
-        $temp_temperatura = empty($temperatura) ? null : (float)$temperatura;
-        mysqli_stmt_bind_param($stmt, 'iddss', $usuario_id, $temp_valor_ph, $temp_temperatura, $nome_liquido, $observacao, $data_medicao);
-        
-        if (mysqli_stmt_execute($stmt)) {
-            header('Location: medicoes_listar.php');
-            exit;
+        if ($valor_ph === '' || !is_numeric($valor_ph)) {
+            $erro = 'Informe um valor de pH válido (número).';
+        } elseif ((float)$valor_ph < 0 || (float)$valor_ph > 14) {
+            $erro = 'O valor de pH deve estar entre 0 e 14.';
+        } elseif ($temperatura === '' || !is_numeric($temperatura)) {
+            $erro = 'Informe uma temperatura válida.';
+        } elseif ($amostra === '') {
+            $erro = 'Informe a amostra.';
+        } elseif ($data_medicao === '') {
+            $erro = 'Informe a data e hora da medição.';
         } else {
-            $erro = 'Erro ao salvar medição. Tente novamente.';
+            $data_medicao_obj = parse_datetime_local($data_medicao);
+            $data_medicao_entrada = $data_medicao_obj ? $data_medicao_obj->format('Y-m-d H:i:s') : '';
+            $agora = now_brasilia();
+
+            if (!$data_medicao_obj || $data_medicao_obj > $agora) {
+                $erro = 'Data e hora da medição não podem estar no futuro.';
+            } else {
+                $sql = 'INSERT INTO medicoes_ph (usuario_id, valor_ph, temperatura, amostra, observacao, data_medicao, criado_em, atualizado_em, atualizado_por) VALUES (?, ?, ?, ?, ?, ?, NOW(), NULL, NULL)';
+                $stmt = mysqli_prepare($conexao, $sql);
+                $temp_valor_ph = (float)$valor_ph;
+                $temp_temperatura = (float)$temperatura;
+                mysqli_stmt_bind_param($stmt, 'iddsss', $usuario_id, $temp_valor_ph, $temp_temperatura, $amostra, $observacao, $data_medicao_entrada);
+
+                if (mysqli_stmt_execute($stmt)) {
+                    set_flash('success', 'Amostra registrada com sucesso.');
+                    redirect_to_medicoes_page();
+                } else {
+                    $erro = 'Erro ao salvar medição. Tente novamente.';
+                }
+            }
         }
     }
 }
@@ -56,34 +62,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
   <div class="logo-area">
-    <img src="imagens/logo-if-h.png" alt="Instituto Federal" class="logo-if">
-  </div>
-  <div class="form-card">
-    <h2>Cadastrar medição</h2>
+  <img src="imagens/logo-sistema.png" alt="Sistema Registrador de pH" class="logo-system">
+  <img src="imagens/logo-if-h.png" alt="Instituto Federal" class="logo-if">
+</div>
+<div class="form-card">
+  <h2>Cadastrar medição</h2>
 
     <?php if ($erro): ?>
       <div class="msg error"><?php echo htmlspecialchars($erro); ?></div>
     <?php endif; ?>
 
     <form method="POST">
+      <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
       <label>Valor do pH *</label>
       <input type="number" step="0.01" min="0" max="14" name="valor_ph" placeholder="Ex: 7.00" required>
       <small style="color: #999; font-size: 12px;">Deve estar entre 0 e 14</small>
 
-      <label>Temperatura (°C)</label>
-      <input type="number" step="0.1" name="temperatura" placeholder="Ex: 25.5">
+      <label>Temperatura (°C) *</label>
+      <input type="number" step="0.1" name="temperatura" placeholder="Ex: 25.5" required>
 
-      <label>Nome do líquido</label>
-      <input type="text" name="nome_liquido" placeholder="Ex: Água mineral">
+      <label>Amostra *</label>
+      <input type="text" name="amostra" placeholder="Ex: Água mineral" required>
 
       <label>Observação</label>
-      <input type="text" name="observacao" placeholder="Ex: Água neutra">
+      <textarea name="observacao" rows="3" placeholder="Registre informações relevantes sobre a medição, condições da amostra ou procedimento."></textarea>
 
-      <label>Data e Hora da medição</label>
-      <input type="datetime-local" name="data_medicao" value="">
+      <label>Data e Hora da medição *</label>
+      <input type="datetime-local" name="data_medicao" value="<?php echo format_datetime_input(now_brasilia()); ?>" required>
 
       <button class="btn" type="submit">Salvar</button>
-      <a class="btn-secondary" href="medicoes_listar.php">Cancelar</a>
+      <a class="btn-secondary" href="<?php echo is_admin() ? 'admin_medicoes.php' : 'medicoes_listar.php'; ?>">Cancelar</a>
     </form>
   </div>
 </body>

@@ -9,8 +9,13 @@ if (isset($_SESSION['usuario_id'])) {
 
 $erro = '';
 $sucesso = '';
+$csrf_token = gerar_csrf_token();
+$auto_aprovacao = should_auto_approve_new_users();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isset($_POST['csrf_token']) || !validar_csrf_token($_POST['csrf_token'])) {
+        $erro = 'Sessão inválida. Tente novamente.';
+    } else {
     $nome = trim($_POST['nome'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $senha = $_POST['senha'] ?? '';
@@ -23,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($senha !== $confirm_senha) {
         $erro = 'As senhas não coincidem.';
     } else {
-        $verifica = mysqli_prepare($conexao, "SELECT id FROM usuarios WHERE email = ? LIMIT 1");
+        $verifica = mysqli_prepare($conexao, 'SELECT id FROM usuarios WHERE email = ? LIMIT 1');
         mysqli_stmt_bind_param($verifica, 's', $email);
         mysqli_stmt_execute($verifica);
         $res = mysqli_stmt_get_result($verifica);
@@ -32,14 +37,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $erro = 'Este email já está cadastrado.';
         } else {
             $hash = password_hash($senha, PASSWORD_DEFAULT);
-            $aprovado = 0;
+            $aprovado = $auto_aprovacao ? 1 : 0;
+            $ativo = 1;
             $role = 'user';
-            $stmt = mysqli_prepare($conexao, "INSERT INTO usuarios(nome,email,senha,aprovado,role) VALUES (?,?,?,?,?)");
-            mysqli_stmt_bind_param($stmt, 'sssis', $nome, $email, $hash, $aprovado, $role);
+            $stmt = mysqli_prepare($conexao, 'INSERT INTO usuarios(nome, email, senha, aprovado, ativo, role) VALUES (?, ?, ?, ?, ?, ?)');
+            mysqli_stmt_bind_param($stmt, 'sssiss', $nome, $email, $hash, $aprovado, $ativo, $role);
             mysqli_stmt_execute($stmt);
 
-            $sucesso = 'Cadastro efetuado. Aguarde aprovação do administrador.';
+            $sucesso = $auto_aprovacao
+                ? 'Cadastro efetuado com sucesso. Você já pode entrar no sistema.'
+                : 'Cadastro efetuado com sucesso. Seu acesso ficará disponível após aprovação do administrador.';
         }
+    }
     }
 }
 ?>
@@ -53,9 +62,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="estilo.css">
 </head>
 <body>
+    <div class="logo-area">
+        <img src="imagens/logo-sistema.png" alt="Sistema Registrador de pH" class="logo-system">
+        <img src="imagens/logo-if-h.png" alt="Instituto Federal" class="logo-if">
+    </div>
     <div class="form-card">
         <h2>Criar conta</h2>
         <p class="small">Preencha seus dados para criar uma nova conta.</p>
+        <p class="small"><?php echo $auto_aprovacao ? 'Ambiente local: o cadastro é liberado automaticamente para uso imediato.' : 'Ambiente de produção: o cadastro aguarda aprovação do administrador.'; ?></p>
 
         <?php if ($erro): ?>
             <div class="msg error"><?php echo htmlspecialchars($erro); ?></div>
@@ -67,6 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php else: ?>
 
         <form method="POST">
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
             <label>Nome completo</label>
             <input type="text" name="nome" placeholder="Seu nome" required>
 
@@ -156,14 +171,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             senhaInput.addEventListener('input', validarComprimentoSenha);
             confirmInput.addEventListener('input', validarCoincidenciaSenha);
 
-            // Validação ao carregar a página (para manter estado se houver erro)
             window.addEventListener('load', () => {
                 if (senhaInput.value) {
                     validarComprimentoSenha();
                 }
             });
 
-            // Toggle mostrar/ocultar senha
             const toggleSenha = document.getElementById('toggleSenha');
             const toggleConfirm = document.getElementById('toggleConfirm');
 

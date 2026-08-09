@@ -6,14 +6,15 @@ exigir_login();
 $usuario_id = $_SESSION['usuario_id'];
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 $erro = '';
+$csrf_token = gerar_csrf_token();
 
 if (!$id) {
     die('ID inválido.');
 }
 
-$sql = 'SELECT id, valor_ph, temperatura, nome_liquido, observacao, data_medicao FROM medicoes_ph WHERE id = ? AND usuario_id = ? LIMIT 1';
+$sql = 'SELECT id, valor_ph, temperatura, amostra, observacao, data_medicao, usuario_id FROM medicoes_ph WHERE id = ? LIMIT 1';
 $stmt = mysqli_prepare($conexao, $sql);
-mysqli_stmt_bind_param($stmt, 'ii', $id, $usuario_id);
+mysqli_stmt_bind_param($stmt, 'i', $id);
 mysqli_stmt_execute($stmt);
 $resultado = mysqli_stmt_get_result($stmt);
 $medicao = mysqli_fetch_assoc($resultado);
@@ -22,48 +23,61 @@ if (!$medicao) {
     die('Medição não encontrada.');
 }
 
-// Converte data_medicao para formato datetime-local
+$can_edit = is_admin() || (int) $medicao['usuario_id'] === $usuario_id;
+if (!$can_edit) {
+    set_flash('error', 'Você não tem permissão para editar esta amostra.');
+    header('Location: medicoes_listar.php');
+    exit;
+}
+
 $data_medicao_formatada = '';
 if (!empty($medicao['data_medicao'])) {
-    $data_medicao_formatada = date('Y-m-d\TH:i', strtotime($medicao['data_medicao']));
+    $data_medicao_formatada = format_datetime_input($medicao['data_medicao']);
+} else {
+    $data_medicao_formatada = format_datetime_input(now_brasilia());
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $valor_ph = trim($_POST['valor_ph'] ?? '');
-    $observacao = trim($_POST['observacao'] ?? '');
-    $temperatura = trim($_POST['temperatura'] ?? '');
-    $nome_liquido = trim($_POST['nome_liquido'] ?? '');
-    $data_medicao = trim($_POST['data_medicao'] ?? '');
-
-    // Validação do pH
-    if ($valor_ph === '' || !is_numeric($valor_ph)) {
-        $erro = 'Informe um valor de pH válido (número).';
-    } elseif ((float)$valor_ph < 0 || (float)$valor_ph > 14) {
-        $erro = 'O valor de pH deve estar entre 0 e 14.';
-    } elseif ($temperatura !== '' && !is_numeric($temperatura)) {
-        $erro = 'Temperatura deve ser um número válido.';
+    if (!isset($_POST['csrf_token']) || !validar_csrf_token($_POST['csrf_token'])) {
+        $erro = 'Sessão inválida. Tente novamente.';
     } else {
-        // Se data não foi informada, usa a data atual
-        if (empty($data_medicao)) {
-            $data_medicao = $medicao['data_medicao'];
-        } else {
-            // Converte para formato datetime
-            $data_medicao = date('Y-m-d H:i:s', strtotime($data_medicao));
-        }
+        $valor_ph = trim($_POST['valor_ph'] ?? '');
+        $observacao = trim($_POST['observacao'] ?? '');
+        $temperatura = trim($_POST['temperatura'] ?? '');
+        $amostra = trim($_POST['amostra'] ?? '');
+        $data_medicao = trim($_POST['data_medicao'] ?? '');
 
-        $sql = 'UPDATE medicoes_ph SET valor_ph = ?, temperatura = ?, nome_liquido = ?, observacao = ?, data_medicao = ? WHERE id = ? AND usuario_id = ?';
-        $stmt = mysqli_prepare($conexao, $sql);
-        
-        $temp_valor_ph = (float)$valor_ph;
-        $temp_temperatura = empty($temperatura) ? null : (float)$temperatura;
-        
-        mysqli_stmt_bind_param($stmt, 'ddsssii', $temp_valor_ph, $temp_temperatura, $nome_liquido, $observacao, $data_medicao, $id, $usuario_id);
-        
-        if (mysqli_stmt_execute($stmt)) {
-            header('Location: medicoes_listar.php');
-            exit;
+        if ($valor_ph === '' || !is_numeric($valor_ph)) {
+            $erro = 'Informe um valor de pH válido (número).';
+        } elseif ((float)$valor_ph < 0 || (float)$valor_ph > 14) {
+            $erro = 'O valor de pH deve estar entre 0 e 14.';
+        } elseif ($temperatura === '' || !is_numeric($temperatura)) {
+            $erro = 'Informe uma temperatura válida.';
+        } elseif ($amostra === '') {
+            $erro = 'Informe a amostra.';
+        } elseif ($data_medicao === '') {
+            $erro = 'Informe a data e hora da medição.';
         } else {
-            $erro = 'Erro ao atualizar medição. Tente novamente.';
+            $data_medicao_obj = parse_datetime_local($data_medicao);
+            $data_medicao_entrada = $data_medicao_obj ? $data_medicao_obj->format('Y-m-d H:i:s') : '';
+            $agora = now_brasilia();
+
+            if (!$data_medicao_obj || $data_medicao_obj > $agora) {
+                $erro = 'Data e hora da medição não podem estar no futuro.';
+            } else {
+                $sql = 'UPDATE medicoes_ph SET valor_ph = ?, temperatura = ?, amostra = ?, observacao = ?, data_medicao = ?, atualizado_em = NOW(), atualizado_por = ? WHERE id = ?';
+                $stmt = mysqli_prepare($conexao, $sql);
+                $temp_valor_ph = (float)$valor_ph;
+                $temp_temperatura = (float)$temperatura;
+                mysqli_stmt_bind_param($stmt, 'ddsssii', $temp_valor_ph, $temp_temperatura, $amostra, $observacao, $data_medicao_entrada, $usuario_id, $id);
+
+                if (mysqli_stmt_execute($stmt)) {
+                    set_flash('success', 'Amostra atualizada com sucesso.');
+                    redirect_to_medicoes_page();
+                } else {
+                    $erro = 'Erro ao atualizar medição. Tente novamente.';
+                }
+            }
         }
     }
 }
@@ -78,6 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
   <div class="logo-area">
+    <img src="imagens/logo-sistema.png" alt="Sistema Registrador de pH" class="logo-system">
     <img src="imagens/logo-if-h.png" alt="Instituto Federal" class="logo-if">
   </div>
   <div class="form-card">
@@ -88,24 +103,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php endif; ?>
 
     <form method="POST">
+      <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
       <label>Valor do pH *</label>
       <input type="number" step="0.01" min="0" max="14" name="valor_ph" value="<?php echo htmlspecialchars($medicao['valor_ph']); ?>" required>
       <small style="color: #999; font-size: 12px;">Deve estar entre 0 e 14</small>
 
-      <label>Temperatura (°C)</label>
-      <input type="number" step="0.1" name="temperatura" value="<?php echo htmlspecialchars($medicao['temperatura'] ?? ''); ?>">
+      <label>Temperatura (°C) *</label>
+      <input type="number" step="0.1" name="temperatura" value="<?php echo htmlspecialchars($medicao['temperatura'] ?? ''); ?>" required>
 
-      <label>Nome do líquido</label>
-      <input type="text" name="nome_liquido" value="<?php echo htmlspecialchars($medicao['nome_liquido'] ?? ''); ?>">
+      <label>Amostra *</label>
+      <input type="text" name="amostra" value="<?php echo htmlspecialchars($medicao['amostra'] ?? ''); ?>" required>
 
       <label>Observação</label>
-      <input type="text" name="observacao" value="<?php echo htmlspecialchars($medicao['observacao'] ?? ''); ?>">
+      <textarea name="observacao" rows="3"><?php echo htmlspecialchars($medicao['observacao'] ?? ''); ?></textarea>
 
-      <label>Data e Hora da medição</label>
-      <input type="datetime-local" name="data_medicao" value="<?php echo htmlspecialchars($data_medicao_formatada); ?>">
+      <label>Data e Hora da medição *</label>
+      <input type="datetime-local" name="data_medicao" value="<?php echo htmlspecialchars($data_medicao_formatada); ?>" required>
 
       <button class="btn" type="submit">Atualizar</button>
-      <a class="btn-secondary" href="medicoes_listar.php">Cancelar</a>
+      <a class="btn-secondary" href="<?php echo is_admin() ? 'admin_medicoes.php' : 'medicoes_listar.php'; ?>">Cancelar</a>
     </form>
   </div>
 </body>
