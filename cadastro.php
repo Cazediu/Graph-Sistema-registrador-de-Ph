@@ -10,7 +10,6 @@ if (isset($_SESSION['usuario_id'])) {
 $erro = '';
 $sucesso = '';
 $csrf_token = gerar_csrf_token();
-$auto_aprovacao = should_auto_approve_new_users();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_POST['csrf_token']) || !validar_csrf_token($_POST['csrf_token'])) {
@@ -37,16 +36,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $erro = 'Este email já está cadastrado.';
         } else {
             $hash = password_hash($senha, PASSWORD_DEFAULT);
-            $aprovado = $auto_aprovacao ? 1 : 0;
+            $aprovado = 0;
             $ativo = 1;
             $role = 'user';
             $stmt = mysqli_prepare($conexao, 'INSERT INTO usuarios(nome, email, senha, aprovado, ativo, role) VALUES (?, ?, ?, ?, ?, ?)');
             mysqli_stmt_bind_param($stmt, 'sssiss', $nome, $email, $hash, $aprovado, $ativo, $role);
             mysqli_stmt_execute($stmt);
 
-            $sucesso = $auto_aprovacao
-                ? 'Cadastro efetuado com sucesso. Você já pode entrar no sistema.'
-                : 'Cadastro efetuado com sucesso. Seu acesso ficará disponível após aprovação do administrador.';
+            $sucesso = 'Cadastro efetuado com sucesso. Seu acesso será liberado após aprovação do administrador.';
         }
     }
     }
@@ -69,7 +66,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="form-card">
         <h2>Criar conta</h2>
         <p class="small">Preencha seus dados para criar uma nova conta.</p>
-        <p class="small"><?php echo $auto_aprovacao ? 'Ambiente local: o cadastro é liberado automaticamente para uso imediato.' : 'Ambiente de produção: o cadastro aguarda aprovação do administrador.'; ?></p>
 
         <?php if ($erro): ?>
             <div class="msg error"><?php echo htmlspecialchars($erro); ?></div>

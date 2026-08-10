@@ -120,7 +120,7 @@ function is_local_environment(): bool {
 }
 
 function should_auto_approve_new_users(): bool {
-    return is_local_environment();
+    return false;
 }
 
 function redirect_to_medicoes_page(): void {

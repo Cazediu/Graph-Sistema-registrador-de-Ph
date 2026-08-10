@@ -11,6 +11,7 @@ $amostra = trim($_GET['amostra'] ?? '');
 $observacao = trim($_GET['observacao'] ?? '');
 $sem_observacao = isset($_GET['sem_observacao']) && $_GET['sem_observacao'] == '1';
 $responsavel = $_GET['responsavel'] ?? 'todas';
+$responsavel_nome = trim($_GET['responsavel_nome'] ?? '');
 $data_medicao_inicio = trim($_GET['data_medicao_inicio'] ?? '');
 $data_medicao_fim = trim($_GET['data_medicao_fim'] ?? '');
 $data_modificacao_inicio = trim($_GET['data_modificacao_inicio'] ?? '');
@@ -57,8 +58,10 @@ $params = [];
 $types = '';
 
 $amostra_search_expr = 'LOWER(m.amostra)';
+$responsavel_search_expr = 'LOWER(COALESCE(u.nome, ""))';
 foreach (['á'=>'a','à'=>'a','ã'=>'a','â'=>'a','ä'=>'a','é'=>'e','è'=>'e','ê'=>'e','ë'=>'e','í'=>'i','ì'=>'i','î'=>'i','ï'=>'i','ó'=>'o','ò'=>'o','õ'=>'o','ô'=>'o','ö'=>'o','ú'=>'u','ù'=>'u','û'=>'u','ü'=>'u','ç'=>'c'] as $from => $to) {
     $amostra_search_expr = "REPLACE($amostra_search_expr, '$from', '$to')";
+    $responsavel_search_expr = "REPLACE($responsavel_search_expr, '$from', '$to')";
 }
 
 if ($valor_ph_min !== '' && is_numeric($valor_ph_min)) {
@@ -91,6 +94,11 @@ if ($sem_observacao) {
 } elseif ($observacao !== '') {
     $sql .= ' AND m.observacao LIKE ?';
     $params[] = '%' . $observacao . '%';
+    $types .= 's';
+}
+if ($responsavel_nome !== '') {
+    $sql .= " AND $responsavel_search_expr LIKE ?";
+    $params[] = '%' . normalize_search_string($responsavel_nome) . '%';
     $types .= 's';
 }
 if ($responsavel === 'minhas') {
@@ -250,6 +258,10 @@ $resultado = mysqli_stmt_get_result($stmt);
                   <input type="checkbox" name="sem_observacao" value="1" style="margin:0;width:12px;height:12px;" <?php echo $sem_observacao ? 'checked' : ''; ?>>
                   Buscar itens sem observação
                 </label>
+              </div>
+              <div class="filter-group full-width">
+                <label>Pesquisar responsável</label>
+                <input type="text" name="responsavel_nome" placeholder="Digite o nome do responsável" value="<?php echo htmlspecialchars($responsavel_nome); ?>">
               </div>
               <div class="filter-group">
                 <label>Responsável</label>
