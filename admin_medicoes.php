@@ -19,6 +19,15 @@ $data_modificacao_fim = trim($_GET['data_modificacao_fim'] ?? '');
 
 $mensagem = get_flash('success');
 $erro = get_flash('error');
+
+$pendentes_stmt = mysqli_prepare($conexao, 'SELECT COUNT(*) AS total FROM usuarios WHERE role = ? AND aprovado = 0 AND id <> 1');
+$pendentes_role = 'user';
+mysqli_stmt_bind_param($pendentes_stmt, 's', $pendentes_role);
+mysqli_stmt_execute($pendentes_stmt);
+$pendentes_result = mysqli_stmt_get_result($pendentes_stmt);
+$pendentes_dados = mysqli_fetch_assoc($pendentes_result);
+$usuarios_pendentes = (int) ($pendentes_dados['total'] ?? 0);
+
 $csrf_token = gerar_csrf_token();
 
 function normalize_search_string(string $value): string {
@@ -165,7 +174,12 @@ $resultado = mysqli_stmt_get_result($stmt);
     </div>
     <nav class="admin-menu">
       <a class="btn-secondary" href="admin_medicoes.php">Lista de medições</a>
-      <a class="btn-secondary" href="admin.php">Gerenciar membros</a>
+      <a class="btn-secondary admin-nav-link" href="admin.php">
+        Gerenciar membros
+        <?php if ($usuarios_pendentes > 0): ?>
+          <span class="notification-badge" title="<?php echo $usuarios_pendentes; ?> usuário(s) pendente(s) de aprovação"><?php echo $usuarios_pendentes; ?></span>
+        <?php endif; ?>
+      </a>
       <a class="btn-secondary" href="medicoes_cadastrar.php">Nova amostra</a>
       <a class="btn-danger" href="logout.php">Sair</a>
     </nav>
