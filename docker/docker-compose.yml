@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # Nosso banco de dados MySQL
+  db:
+    image: mysql:8.0
+    container_name: phmetro_db
+    environment:
+      # Definimos uma senha root e o nome do banco
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: phmetro
+    volumes:
+      # Mantém os dados salvos mesmo se o container for apagado
+      - db_data:/var/lib/mysql
+      # Pega o seu banco.sql na pasta raiz do projeto (voltou uma pasta: ../) e executa
+      - ../banco.sql:/docker-entrypoint-initdb.d/banco.sql
+    ports:
+      # Permite acessar o banco na porta 3306 do seu PC
+      - "3306:3306"
+
+  # Nosso servidor com PHP e o site
+  web:
+    build: 
+      # Aponta o contexto de construção para a raiz do projeto para o Dockerfile conseguir copiar os arquivos de lá
+      context: ..
+      # Aponta onde está o arquivo Dockerfile
+      dockerfile: docker/Dockerfile
+    container_name: phmetro_web
+    ports:
+      # O site vai ficar acessível na porta 8080 (http://localhost:8080)
+      - "8080:80"
+    environment:
+      # Essas são as variáveis que nosso conexao.php usa
+      DB_HOST: db
+      DB_USER: root
+      DB_PASS: root
+      DB_NAME: phmetro
+    depends_on:
+      # Garante que o web só sobe depois que o banco (db) já subiu
+      - db
+    volumes:
+      # Espelha a sua pasta raiz do projeto (../) para dentro do container
+      - ../:/var/www/html/
+
+volumes:
+  db_data:
