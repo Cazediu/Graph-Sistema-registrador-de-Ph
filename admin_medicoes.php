@@ -158,7 +158,7 @@ $resultado = mysqli_stmt_get_result($stmt);
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin - Lista de medições</title>
-  <link rel="stylesheet" href="estilo.css">
+  <link rel="stylesheet" href="estilo.css?v=<?php echo time(); ?>">
 </head>
 <body>
   <div class="container wide-container">
@@ -273,17 +273,19 @@ $resultado = mysqli_stmt_get_result($stmt);
                   Buscar itens sem observação
                 </label>
               </div>
-              <div class="filter-group full-width">
-                <label>Pesquisar responsável</label>
-                <input type="text" name="responsavel_nome" placeholder="Digite o nome do responsável" value="<?php echo htmlspecialchars($responsavel_nome); ?>">
-              </div>
-              <div class="filter-group">
-                <label>Responsável</label>
-                <select name="responsavel">
-                  <option value="todas" <?php echo $responsavel === 'todas' ? 'selected' : ''; ?>>Todas</option>
-                  <option value="minhas" <?php echo $responsavel === 'minhas' ? 'selected' : ''; ?>>Minhas medições</option>
-                  <option value="outras" <?php echo $responsavel === 'outras' ? 'selected' : ''; ?>>Medições de outros</option>
-                </select>
+              <div class="dependent-filters-box">
+                <div class="filter-group">
+                  <label>Responsável</label>
+                  <select name="responsavel">
+                    <option value="todas" <?php echo $responsavel === 'todas' ? 'selected' : ''; ?>>Todas</option>
+                    <option value="minhas" <?php echo $responsavel === 'minhas' ? 'selected' : ''; ?>>Minhas medições</option>
+                    <option value="outras" <?php echo $responsavel === 'outras' ? 'selected' : ''; ?>>Medições de outros</option>
+                  </select>
+                </div>
+                <div class="filter-group full-width" id="grupo-pesquisa-responsavel" style="margin-top: 12px;">
+                  <label>Pesquisar responsável</label>
+                  <input type="text" name="responsavel_nome" placeholder="Digite o nome do responsável" value="<?php echo htmlspecialchars($responsavel_nome); ?>" style="margin-bottom: 0;">
+                </div>
               </div>
               <div class="filter-group">
                 <label>Data da medição</label>
@@ -335,6 +337,20 @@ $resultado = mysqli_stmt_get_result($stmt);
       syncObservacaoFilter();
       if (semObservacaoCheckbox) {
           semObservacaoCheckbox.addEventListener('change', syncObservacaoFilter);
+      }
+
+      const responsavelSelect = filterForm ? filterForm.querySelector('[name="responsavel"]') : null;
+      const grupoPesquisaResponsavel = document.getElementById('grupo-pesquisa-responsavel');
+      if (responsavelSelect && grupoPesquisaResponsavel) {
+          const syncResponsavelFilter = () => {
+              if (responsavelSelect.value === 'minhas') {
+                  grupoPesquisaResponsavel.style.display = 'none';
+              } else {
+                  grupoPesquisaResponsavel.style.display = '';
+              }
+          };
+          syncResponsavelFilter();
+          responsavelSelect.addEventListener('change', syncResponsavelFilter);
       }
 
       const updateResults = async () => {

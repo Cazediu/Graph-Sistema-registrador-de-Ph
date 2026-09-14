@@ -605,6 +605,18 @@ form .btn {
  gap: 10px;
 }
 
+.dependent-filters-box {
+ background: #ffffff;
+ border: 2px solid #cbd5e1;
+ border-radius: 12px;
+ padding: 16px;
+ grid-column: 1 / -1; /* Make it take full width in filters-grid if necessary */
+}
+
+.dependent-filters-box .filter-group {
+ gap: 8px;
+}
+
 .filter-group.full-width {
  width: 100%;
 }
