@@ -155,6 +155,7 @@ $resultado = mysqli_stmt_get_result($stmt);
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+  <link rel="icon" type="image/png" href="imagens/favicon.png">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin - Lista de medições - GrapH</title>

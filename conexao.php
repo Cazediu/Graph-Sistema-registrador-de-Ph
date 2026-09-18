@@ -1,4 +1,21 @@
 <?php
+if (file_exists(__DIR__ . '/.env')) {
+    $linhas = file(__DIR__ . '/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($linhas as $linha) {
+        if (strpos(trim($linha), '#') === 0) continue;
+        if (strpos($linha, '=') !== false) {
+            list($nome, $valor) = explode('=', $linha, 2);
+            $nome = trim($nome);
+            $valor = trim(trim($valor), '"\'');
+            if (!array_key_exists($nome, $_SERVER) && !array_key_exists($nome, $_ENV)) {
+                putenv(sprintf('%s=%s', $nome, $valor));
+                $_ENV[$nome] = $valor;
+                $_SERVER[$nome] = $valor;
+            }
+        }
+    }
+}
+
 $host = getenv('DB_HOST') ?: 'localhost';
 $usuario = getenv('DB_USER') ?: 'graph';
 $senha = getenv('DB_PASS') ?: 'graphifrp@25198jcgbm';

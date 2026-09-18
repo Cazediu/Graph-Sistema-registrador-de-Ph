@@ -171,6 +171,7 @@ $resultado = mysqli_stmt_get_result($stmt);
 <html lang="pt-BR">
 
 <head>
+  <link rel="icon" type="image/png" href="imagens/favicon.png">
 
     <meta charset="UTF-8">
 
