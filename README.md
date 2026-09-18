@@ -61,5 +61,5 @@ O projeto conta com um ambiente completo já configurado no arquivo `docker-comp
 
 ## 🧑‍💻 Primeiro Acesso
 O arquivo de banco de dados (`banco.sql`) já cria um usuário administrador padrão e alguns dados de exemplo. 
-- **Email:** `admin@gmail.com`
+- **Email:** `graphadmin@gmail.com`
 - (Verifique a senha no script ou, caso não a saiba devido ao hash `$2y$10$...`, sinta-se à vontade para registrar um novo usuário através da tela de cadastro do sistema!).

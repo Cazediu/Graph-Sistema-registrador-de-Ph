@@ -1,7 +1,7 @@
 <?php
 $host = getenv('DB_HOST') ?: 'localhost';
-$usuario = getenv('DB_USER') ?: 'root';
-$senha = getenv('DB_PASS') ?: '';
+$usuario = getenv('DB_USER') ?: 'graph';
+$senha = getenv('DB_PASS') ?: 'graphifrp@25198jcgbm';
 $banco = getenv('DB_NAME') ?: 'phmetro';
 
 date_default_timezone_set('America/Sao_Paulo');

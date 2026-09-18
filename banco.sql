@@ -35,7 +35,7 @@ CREATE TABLE medicoes_ph (
 
 -- Usuário administrador padrão
 INSERT INTO usuarios (nome, email, senha, aprovado, ativo, role)
-VALUES ('Administrador', 'admin@gmail.com', '$2y$10$bwUtNnXexDu511Y3su54IO27jd5rwaIi10Hqo4pdLoGPIwxYimE.C', 1, 1, 'admin');
+VALUES ('Administrador', 'graphadmin@gmail.com', '$2y$10$mLdS3ooeD1YWqFl9YZcaleggVSDtmx3.XT1yPGGMscYty/qf0I4LO', 1, 1, 'admin');
 
 -- Dados de exemplo
 INSERT INTO medicoes_ph (usuario_id, valor_ph, temperatura, amostra, observacao, data_medicao, criado_em)

@@ -7,6 +7,8 @@ services:
       # Definimos uma senha root e o nome do banco
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: phmetro
+      MYSQL_USER: graph
+      MYSQL_PASSWORD: graphifrp@25198jcgbm
     volumes:
       # Mantém os dados salvos mesmo se o container for apagado
       - db_data:/var/lib/mysql
@@ -30,8 +32,8 @@ services:
     environment:
       # Essas são as variáveis que nosso conexao.php usa
       DB_HOST: db
-      DB_USER: root
-      DB_PASS: root
+      DB_USER: graph
+      DB_PASS: graphifrp@25198jcgbm
       DB_NAME: phmetro
     depends_on:
       # Garante que o web só sobe depois que o banco (db) já subiu
