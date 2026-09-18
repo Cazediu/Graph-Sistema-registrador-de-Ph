@@ -131,5 +131,3 @@ function redirect_to_medicoes_page(): void {
     }
     exit;
 }
-?>
-

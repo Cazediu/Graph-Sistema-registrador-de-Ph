@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Nosso banco de dados MySQL
   db:
