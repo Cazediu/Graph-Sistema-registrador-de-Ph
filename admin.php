@@ -85,7 +85,7 @@ $csrf_token = gerar_csrf_token();
 <body>
   <div class="container">
     <div class="logo-area">
-      <img src="imagens/logo-sistema.png" alt="Sistema Registrador de pH" class="logo-system">
+      <img src="imagens/logo-sistema.png" alt="GrapH" class="logo-system">
       <img src="imagens/logo-if-h.png" alt="Instituto Federal" class="logo-if">
     </div>
     <div class="topbar">
@@ -178,5 +178,6 @@ $csrf_token = gerar_csrf_token();
       </table>
     </div>
   </div>
+<?php include 'footer.php'; ?>
 </body>
 </html>

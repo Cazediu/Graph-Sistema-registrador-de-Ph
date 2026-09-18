@@ -61,13 +61,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - Sistema pHmetro</title>
+  <title>Login - GrapH</title>
   <link rel="stylesheet" href="estilo.css">
 </head>
 <body>
 <div class="form-card">
   <div class="login-logo">
-    <img src="imagens/logo-sistema.png" alt="Sistema Registrador de pH" class="logo-system">
+    <img src="imagens/logo-sistema.png" alt="GrapH" class="logo-system">
   </div>
   <?php if ($erro): ?>
       <div class="msg error"><?php echo htmlspecialchars($erro); ?></div>
@@ -106,5 +106,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       img.alt = tipo === 'password' ? 'Mostrar senha' : 'Ocultar senha';
     });
   </script>
+<?php include 'footer.php'; ?>
 </body>
 </html>

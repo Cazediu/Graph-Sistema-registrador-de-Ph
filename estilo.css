@@ -970,3 +970,49 @@ button[type="submit"]:disabled:hover {
     font-size: 14px !important;
     font-weight: 600 !important;
 }
+
+/* ===== FOOTER MINIMALISTA ===== */
+.site-footer {
+  margin-top: 60px;
+  padding: 30px 20px;
+  background-color: transparent;
+  color: var(--color-text-light);
+  font-size: 12px;
+  text-align: center;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.footer-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.footer-title {
+  font-size: 13px;
+  margin-bottom: 12px;
+  color: var(--color-text);
+}
+
+.footer-credits {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+}
+
+.credit-group {
+  line-height: 1.5;
+  text-align: center;
+}
+
+.credit-label {
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+@media (min-width: 768px) {
+  .site-footer {
+    padding: 40px 20px;
+  }
+}

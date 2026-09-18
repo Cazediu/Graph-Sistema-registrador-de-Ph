@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
   <div class="logo-area">
-  <img src="imagens/logo-sistema.png" alt="Sistema Registrador de pH" class="logo-system">
+  <img src="imagens/logo-sistema.png" alt="GrapH" class="logo-system">
   <img src="imagens/logo-if-h.png" alt="Instituto Federal" class="logo-if">
 </div>
 <div class="form-card">
@@ -94,5 +94,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <a class="btn-secondary" href="<?php echo is_admin() ? 'admin_medicoes.php' : 'medicoes_listar.php'; ?>">Cancelar</a>
     </form>
   </div>
+<?php include 'footer.php'; ?>
 </body>
 </html>

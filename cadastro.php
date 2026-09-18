@@ -55,12 +55,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Criar conta - Sistema pHmetro</title>
+    <title>Criar conta - GrapH</title>
     <link rel="stylesheet" href="estilo.css">
 </head>
 <body>
     <div class="logo-area">
-        <img src="imagens/logo-sistema.png" alt="Sistema Registrador de pH" class="logo-system">
+        <img src="imagens/logo-sistema.png" alt="GrapH" class="logo-system">
         <img src="imagens/logo-if-h.png" alt="Instituto Federal" class="logo-if">
     </div>
     <div class="form-card">
@@ -198,5 +198,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif; ?>
 
     </div>
+<?php include 'footer.php'; ?>
 </body>
 </html>

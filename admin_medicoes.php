@@ -163,7 +163,7 @@ $resultado = mysqli_stmt_get_result($stmt);
 <body>
   <div class="container wide-container">
     <div class="logo-area">
-      <img src="imagens/logo-sistema.png" alt="Sistema Registrador de pH" class="logo-system">
+      <img src="imagens/logo-sistema.png" alt="GrapH" class="logo-system">
       <img src="imagens/logo-if-h.png" alt="Instituto Federal" class="logo-if">
     </div>
     <div class="topbar">
@@ -389,5 +389,6 @@ $resultado = mysqli_stmt_get_result($stmt);
       });
   });
   </script>
+<?php include 'footer.php'; ?>
 </body>
 </html>

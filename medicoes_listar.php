@@ -188,7 +188,7 @@ $resultado = mysqli_stmt_get_result($stmt);
 <div class="container">
 
 <div class="logo-area logo-list">
-    <img src="imagens/logo-sistema.png" alt="Sistema Registrador de pH" class="logo-system">
+    <img src="imagens/logo-sistema.png" alt="GrapH" class="logo-system">
 </div>
 
     <div class="topbar">
@@ -440,5 +440,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
+<?php include 'footer.php'; ?>
 </body>
 </html>
