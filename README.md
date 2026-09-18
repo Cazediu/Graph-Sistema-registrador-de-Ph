@@ -1,4 +1,4 @@
-# Sistema Registrador de pH - IFSEMG
+# Sistema GrapH - IFSEMG
 
 Este é um sistema web acadêmico e profissional desenvolvido em PHP puro para realizar o controle, gerenciamento e histórico de medições de pH e temperatura de diferentes amostras. O sistema foi desenvolvido para facilitar rotinas de laboratório no IFSEMG, garantindo que as leituras fiquem salvas e organizadas com segurança.
 

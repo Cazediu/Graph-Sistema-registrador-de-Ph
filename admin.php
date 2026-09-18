@@ -79,7 +79,7 @@ $csrf_token = gerar_csrf_token();
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel Administrativo</title>
+  <title>Painel Administrativo - GrapH</title>
   <link rel="stylesheet" href="estilo.css">
 </head>
 <body>

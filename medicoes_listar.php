@@ -177,7 +177,7 @@ $resultado = mysqli_stmt_get_result($stmt);
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <title>Lista de medições</title>
+    <title>Lista de medições - GrapH</title>
 
     <link rel="stylesheet" href="estilo.css?v=<?php echo time(); ?>">
 

@@ -1,4 +1,4 @@
--- Banco de dados para o Sistema Registrador de pH
+-- Banco de dados para o Sistema GrapH
 DROP DATABASE IF EXISTS phmetro;
 CREATE DATABASE phmetro CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE phmetro;
