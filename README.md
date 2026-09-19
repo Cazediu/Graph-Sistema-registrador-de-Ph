@@ -22,13 +22,9 @@
 
 ## 📖 Descrição do Projeto
 
-O **Sistema GrapH** é uma aplicação web desenvolvida em **PHP puro** com o objetivo de informatizar e organizar o registro de medições de pH e temperatura realizadas em laboratório. Ele permite que técnicos e pesquisadores do IFSEMG registrem leituras de diferentes amostras, acompanhem o histórico completo e gerenciem usuários com diferentes níveis de acesso.
+O **Sistema GrapH** é uma aplicação web desenvolvida em **PHP puro** com o objetivo de informatizar e organizar o registro de medições de pH e temperatura realizadas em laboratório. Ele permite que técnicos e pesquisadores do IFSEMG registrem leituras de diferentes amostras e gerenciem usuários.
 
-O sistema foi projetado com foco em:
-- **Praticidade**: Interface simples e direta para o ambiente de laboratório.
-- **Segurança**: Controle de sessão, senhas com hash `bcrypt` e separação de papéis (roles).
-- **Portabilidade**: Toda a infraestrutura pode ser levantada com um único comando via Docker.
-
+O sistema foi projetado com foco em uma interface simples e direta para o ambiente de laboratório.
 ---
 
 ## ✨ Funcionalidades
