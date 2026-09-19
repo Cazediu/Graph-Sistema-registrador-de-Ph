@@ -12,7 +12,6 @@
 - [Dependências e Versões](#-dependências-e-versões)
 - [Estrutura do Projeto](#-estrutura-do-projeto)
 - [Variáveis de Ambiente](#%EF%B8%8F-variáveis-de-ambiente)
-- [Avisos de Segurança (.env)](#%EF%B8%8F-avisos-de-segurança-env)
 - [Como Subir com Docker](#-como-subir-com-docker)
 - [Como Executar Localmente (WAMP/XAMPP)](#-como-executar-localmente-wampxampp)
 - [Banco de Dados](#%EF%B8%8F-banco-de-dados)
