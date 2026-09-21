@@ -8,9 +8,9 @@ services:
     environment:
       # Definimos uma senha root e o nome do banco
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: ${DB_NAME}
-      MYSQL_USER: ${DB_USER}
-      MYSQL_PASSWORD: ${DB_PASS}
+      MYSQL_DATABASE: phmetro
+      MYSQL_USER: graph
+      MYSQL_PASSWORD: graphifrp@25198jcgbm
     volumes:
       # Mantém os dados salvos mesmo se o container for apagado
       - db_data:/var/lib/mysql
