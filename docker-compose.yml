@@ -15,7 +15,7 @@ services:
       # Mantém os dados salvos mesmo se o container for apagado
       - db_data:/var/lib/mysql
       # Pega o seu banco.sql na pasta raiz do projeto (voltou uma pasta: ../) e executa
-      - banco.sql:/docker-entrypoint-initdb.d/banco.sql
+      - ./banco.sql:/docker-entrypoint-initdb.d/banco.sql
     ports:
       # Permite acessar o banco na porta configurada no .env
       - "${DOCKER_DB_PORT:-3306}:3306"
