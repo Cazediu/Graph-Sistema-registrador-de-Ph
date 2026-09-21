@@ -30,7 +30,7 @@ services:
     container_name: phmetro_web
     ports:
       # O site vai ficar acessível na porta configurada no .env
-      - "${DOCKER_WEB_PORT:-9002}:90"
+      - "${DOCKER_WEB_PORT:-9002}:9002"
     env_file:
       - ../.env
     environment:
