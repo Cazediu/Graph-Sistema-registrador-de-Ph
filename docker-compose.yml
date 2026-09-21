@@ -4,7 +4,7 @@ services:
     image: mysql:8.0
     container_name: phmetro_db
     env_file:
-      - ../.env
+      - .env
     environment:
       # Definimos uma senha root e o nome do banco
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -15,7 +15,7 @@ services:
       # Mantém os dados salvos mesmo se o container for apagado
       - db_data:/var/lib/mysql
       # Pega o seu banco.sql na pasta raiz do projeto (voltou uma pasta: ../) e executa
-      - ../banco.sql:/docker-entrypoint-initdb.d/banco.sql
+      - banco.sql:/docker-entrypoint-initdb.d/banco.sql
     ports:
       # Permite acessar o banco na porta configurada no .env
       - "${DOCKER_DB_PORT:-3306}:3306"
@@ -32,7 +32,7 @@ services:
       # O site vai ficar acessível na porta configurada no .env
       - "${DOCKER_WEB_PORT:-9002}:9002"
     env_file:
-      - ../.env
+      - .env
     environment:
       # Sobrescrevemos apenas o DB_HOST para conectar no container do banco
       DB_HOST: db
@@ -41,7 +41,7 @@ services:
       - db
     volumes:
       # Espelha a sua pasta raiz do projeto (../) para dentro do container
-      - ../:/var/www/html/
+      - :/var/www/html/
 
 volumes:
   db_data:
