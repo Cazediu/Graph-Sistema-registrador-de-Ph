@@ -38,7 +38,7 @@ services:
       DB_HOST: db
     depends_on:
       # Garante que o web só sobe depois que o banco (db) já subiu
-      - db
+      - .db
     volumes:
       # Espelha a sua pasta raiz do projeto (../) para dentro do container
       - ../:/var/www/html/
