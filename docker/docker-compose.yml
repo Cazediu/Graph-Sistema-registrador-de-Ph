@@ -7,7 +7,7 @@ services:
       - ../.env
     environment:
       # Definimos uma senha root e o nome do banco
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS}
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASS}
