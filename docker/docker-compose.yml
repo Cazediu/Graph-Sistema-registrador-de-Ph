@@ -24,9 +24,8 @@ services:
   web:
     build: 
       # Aponta o contexto de construção para a raiz do projeto para o Dockerfile conseguir copiar os arquivos de lá
-      context: ..
       # Aponta onde está o arquivo Dockerfile
-      dockerfile: docker/Dockerfile
+      dockerfile: Dockerfile
     container_name: phmetro_web
     ports:
       # O site vai ficar acessível na porta configurada no .env
