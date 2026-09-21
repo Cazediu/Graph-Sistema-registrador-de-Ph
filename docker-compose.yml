@@ -41,7 +41,7 @@ services:
       - db
     volumes:
       # Espelha a sua pasta raiz do projeto (../) para dentro do container
-      - :/var/www/html/
+      - ../:/var/www/html/
 
 volumes:
   db_data:
