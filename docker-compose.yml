@@ -40,7 +40,7 @@ services:
       - ./:/var/www/html/
     ports:
       # O site vai ficar acessível na porta configurada no .env
-      - "${DOCKER_WEB_PORT:-9014}:80"
+      - "${DOCKER_WEB_PORT:-9005}:80"
 
 volumes:
   db_data:
