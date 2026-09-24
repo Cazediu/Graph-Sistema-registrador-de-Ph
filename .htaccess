@@ -1,0 +1,18 @@
+# Define o arquivo inicial do site
+DirectoryIndex index.php index.html
+
+# Habilita o módulo de reescrita de URL
+Options +FollowSymLinks
+RewriteEngine On
+
+# Bloqueia acesso direto ao arquivo .env (segurança)
+<Files ".env">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Bloqueia acesso a arquivos de configuração sensíveis
+<FilesMatch "\.(sql|md|git|env\.example)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>

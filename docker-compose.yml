@@ -35,9 +35,11 @@ services:
     depends_on:
       # Garante que o web só sobe depois que o banco (db) já subiu
       - db
-    volumes:
-      # Espelha a sua pasta raiz do projeto (../) para dentro do container
-      - ./:/var/www/html/
+    # volumes:
+      # ATENÇÃO: Em produção (servidor), NÃO use volume de bind mount.
+      # O Dockerfile já copia os arquivos com as permissões corretas via COPY + chown.
+      # Descomente apenas para desenvolvimento local:
+      # - ./:/var/www/html/
     ports:
       # O site vai ficar acessível na porta configurada no .env
       - "${DOCKER_WEB_PORT:-9002}:80"
