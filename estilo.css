@@ -1,4 +1,4 @@
-﻿/* ===================================================
+/* ===================================================
    GRAPH - Sistema Registrador de pH
    Estilo global com responsividade mobile-first
    =================================================== */
@@ -835,11 +835,19 @@ tr:hover { background: #f9fffe; }
     position: sticky;
     top: 32px;
     align-self: flex-start;
-    max-height: calc(100vh - 100px);
-    overflow: hidden;
+    /* sem max-height nem overflow: o filter-panel cuida do proprio scroll */
   }
 
-  .filter-panel { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+  .filter-panel {
+    flex: 1 1 auto;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+  }
+  .filter-panel::-webkit-scrollbar { width: 6px; }
+  .filter-panel::-webkit-scrollbar-track { background: transparent; }
+  .filter-panel::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
 
   .form-card { margin: 40px auto; padding: 36px 32px; }
 
