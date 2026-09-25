@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /* ===================================================
    GRAPH - Sistema Registrador de pH
    Estilo global com responsividade mobile-first
@@ -6,8 +7,8 @@
 *, *::before, *::after { box-sizing: border-box; }
 
 :root {
-  --color-primary:        #4CAF50;
-  --color-primary-dark:   #45a049;
+  --color-primary:        #0f766e;
+  --color-primary-dark:   #115e59;
   --color-primary-teal:   #0f766e;
   --color-primary-teal-d: #115e59;
   --color-danger:         #dc2626;
@@ -800,7 +801,7 @@ tr:hover { background: #f9fffe; }
 }
 
 /* ====================================================
-   TABLET (601 – 979 px)
+   TABLET (601 - 979 px)
    ==================================================== */
 @media (min-width: 601px) and (max-width: 979px) {
   .table-wrap { overflow-x: auto; }

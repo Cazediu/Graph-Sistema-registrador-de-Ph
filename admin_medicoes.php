@@ -194,8 +194,7 @@ $resultado = mysqli_stmt_get_result($stmt);
           <!-- Botões rápidos de filtro — visíveis apenas em mobile -->
           <div class="mobile-filter-actions">
               <button type="button" class="btn btn-filter-open" id="btn-abrir-filtros">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4h18M7 8h10M11 12h2"/></svg>
-                  Filtros
+                  &#9776; Filtros
               </button>
               <a class="btn btn-clear-filters" href="admin_medicoes.php">Limpar filtros</a>
           </div>
