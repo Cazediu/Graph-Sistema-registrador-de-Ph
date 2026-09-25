@@ -131,9 +131,9 @@ $csrf_token = gerar_csrf_token();
         <tbody>
           <?php while ($usuario = mysqli_fetch_assoc($resultado)): ?>
             <tr>
-              <td><?php echo htmlspecialchars($usuario['nome']); ?></td>
-              <td><?php echo htmlspecialchars($usuario['email']); ?></td>
-              <td>
+              <td data-label="Nome"><?php echo htmlspecialchars($usuario['nome']); ?></td>
+              <td data-label="Email"><?php echo htmlspecialchars($usuario['email']); ?></td>
+              <td data-label="Status">
                 <?php if ((int) $usuario['aprovado'] === 0): ?>
                   <span class="status-chip pending">Pendente</span>
                 <?php elseif ((int) $usuario['ativo'] === 1): ?>
@@ -142,7 +142,7 @@ $csrf_token = gerar_csrf_token();
                   <span class="status-chip inactive">Inativo</span>
                 <?php endif; ?>
               </td>
-              <td><?php echo htmlspecialchars($usuario['criado_em']); ?></td>
+              <td data-label="Cadastro"><?php echo htmlspecialchars($usuario['criado_em']); ?></td>
               <td class="actions">
                 <?php if ((int) $usuario['aprovado'] === 0): ?>
                   <form method="POST" style="display:inline-block; margin:0;" onsubmit="return confirm('Deseja remover este pedido pendente?');">

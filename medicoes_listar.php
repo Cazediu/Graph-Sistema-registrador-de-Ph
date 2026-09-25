@@ -238,26 +238,26 @@ $resultado = mysqli_stmt_get_result($stmt);
                         <?php else: ?>
                             <?php while ($linha = mysqli_fetch_assoc($resultado)): ?>
                                 <tr>
-                                    <td><?php echo htmlspecialchars($linha['amostra'] ?? ''); ?></td>
-                                    <td><?php echo number_format((float)$linha['valor_ph'], 2, ',', '.'); ?></td>
-                                    <td>
+                                    <td data-label="Amostra"><?php echo htmlspecialchars($linha['amostra'] ?? ''); ?></td>
+                                    <td data-label="pH"><?php echo number_format((float)$linha['valor_ph'], 2, ',', '.'); ?></td>
+                                    <td data-label="Responsável">
                                         <div class="responsavel-cell">
                                             <strong><?php echo htmlspecialchars($linha['criado_por_nome'] ?? ''); ?></strong>
                                             <span class="status-dot <?php echo ((int)($linha['responsavel_ativo'] ?? 0) === 1) ? 'active' : 'inactive'; ?>">●</span>
                                             <span><?php echo ((int)($linha['responsavel_ativo'] ?? 0) === 1) ? 'Ativo' : 'Inativo'; ?></span>
                                         </div>
                                     </td>
-                                    <td class="cell-observation">
+                                    <td data-label="Observação" class="cell-observation">
                                         <?php
                                         $obs = trim((string)($linha['observacao'] ?? ''));
                                         echo htmlspecialchars($obs !== '' ? $obs : 'Nenhuma observação escrita');
                                         ?>
                                     </td>
-                                    <td><?php echo ($linha['temperatura'] === null || $linha['temperatura'] === '') ? '' : number_format((float)$linha['temperatura'], 2, ',', '.') . ' °C'; ?></td>
-                                    <td>
+                                    <td data-label="Temperatura"><?php echo ($linha['temperatura'] === null || $linha['temperatura'] === '') ? '' : number_format((float)$linha['temperatura'], 2, ',', '.') . ' °C'; ?></td>
+                                    <td data-label="Data medição">
                                         <div class="small"><?php echo !empty($linha['data_medicao']) ? format_datetime_brasilia($linha['data_medicao']) : '—'; ?></div>
                                     </td>
-                                    <td>
+                                    <td data-label="Modificação">
                                         <div class="small"><?php echo !empty($linha['atualizado_em']) ? format_datetime_brasilia($linha['atualizado_em']) : 'Nunca'; ?></div>
                                         <div class="small">Por: <?php echo !empty($linha['atualizado_por_nome']) ? htmlspecialchars($linha['atualizado_por_nome']) : '—'; ?></div>
                                     </td>
