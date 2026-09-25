@@ -6,34 +6,29 @@ services:
     env_file:
       - .env
     environment:
-      # Definimos uma senha root e o nome do banco
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: phmetro
       MYSQL_USER: graph
       MYSQL_PASSWORD: graphifrp@25198jcgbm
     volumes:
-      # Mantém os dados salvos mesmo se o container for apagado
       - db_data:/var/lib/mysql
-      # Pega o seu banco.sql na pasta raiz do projeto (voltou uma pasta: ../) e executa
       - ./banco.sql:/docker-entrypoint-initdb.d/banco.sql
     ports:
-      # Permite acessar o banco na porta configurada no .env
       - "${DOCKER_DB_PORT:-3306}:3306"
+    networks:
+      - phmetro_net
 
   # Nosso servidor com PHP e o site
   web:
-    build: 
-      # Aponta o contexto de construção para a raiz do projeto para o Dockerfile conseguir copiar os arquivos de lá
-      # Aponta onde está o arquivo Dockerfile
+    build:
+      context: .
       dockerfile: Dockerfile
     container_name: phmetro_web
     env_file:
       - .env
     environment:
-      # Sobrescrevemos apenas o DB_HOST para conectar no container do banco
       DB_HOST: db
     depends_on:
-      # Garante que o web só sobe depois que o banco (db) já subiu
       - db
     # volumes:
       # ATENÇÃO: Em produção (servidor), NÃO use volume de bind mount.
@@ -41,9 +36,14 @@ services:
       # Descomente apenas para desenvolvimento local:
       # - ./:/var/www/html/
     ports:
-      # O site vai ficar acessível na porta configurada no .env
       - "${DOCKER_WEB_PORT:-9002}:80"
+    networks:
+      - phmetro_net
 
 volumes:
   db_data:
+
+networks:
+  phmetro_net:
+    driver: bridge
 
