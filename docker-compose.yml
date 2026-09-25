@@ -1,7 +1,9 @@
 services:
   # Nosso banco de dados MySQL
   db:
-    image: mysql:8.0
+    build:
+      context: .
+      dockerfile: db.Dockerfile
     container_name: phmetro_db
     env_file:
       - .env
@@ -12,7 +14,6 @@ services:
       MYSQL_PASSWORD: graphifrp@25198jcgbm
     volumes:
       - db_data:/var/lib/mysql
-      - ./banco.sql:/docker-entrypoint-initdb.d/banco.sql
     ports:
       - "${DOCKER_DB_PORT:-3306}:3306"
     networks:
