@@ -890,3 +890,199 @@ tr:hover { background: #f9fffe; }
   tr:hover { background: inherit; }
   .actions a:hover { background: none; }
 }
+
+/* ====================================================
+   MOBILE FILTER BUTTONS (abaixo da busca)
+   ==================================================== */
+.mobile-filter-actions {
+    display: none; /* oculto por padrao; aparece so no mobile */
+    gap: 10px;
+    margin-top: 12px;
+}
+.btn-filter-open {
+    background: var(--color-primary-teal);
+    color: #fff;
+    flex: 1;
+}
+.btn-filter-open:hover { background: var(--color-primary-teal-d); }
+.btn-clear-filters {
+    background: var(--color-secondary);
+    color: var(--color-text);
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 20px;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none !important;
+    transition: var(--transition);
+}
+.btn-clear-filters:hover { background: #d1d5db; }
+
+/* ====================================================
+   SIDEBAR DESKTOP-ONLY: oculta no mobile
+   ==================================================== */
+.sidebar-desktop-only { display: block; }
+
+/* ====================================================
+   MODAL DE FILTROS (mobile)
+   ==================================================== */
+/* Backdrop */
+.filter-modal-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 900;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+.filter-modal-backdrop.open {
+    display: block;
+    opacity: 1;
+}
+
+/* Modal drawer (slide from bottom) */
+.filter-modal {
+    display: none;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 901;
+    background: var(--color-white);
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -4px 32px rgba(0,0,0,.15);
+    max-height: 90dvh;
+    flex-direction: column;
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.filter-modal.open {
+    display: flex;
+    transform: translateY(0);
+}
+
+/* Header do modal */
+.filter-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--color-secondary);
+    flex-shrink: 0;
+}
+.filter-modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+/* Botao fechar */
+.filter-modal-close {
+    background: #f1f5f9;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: var(--color-text-light);
+    cursor: pointer;
+    transition: var(--transition);
+    padding: 0;
+    line-height: 1;
+}
+.filter-modal-close:hover { background: #e2e8f0; color: var(--color-text); transform: none; }
+
+/* Body do modal (scrollavel) */
+.filter-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 20px;
+}
+.filter-modal-body .filters-grid { gap: 14px; }
+.filter-modal-body .buttons { margin-top: 20px; }
+
+/* ====================================================
+   ACOES NOS CARDS MOBILE: botoes do mesmo tamanho
+   ==================================================== */
+/* Na visualizacao de cards (mobile), Editar e Excluir
+   ficam com o mesmo tamanho e estilo de botao */
+@media (max-width: 600px) {
+    /* Mostrar botoes mobile de filtro */
+    .mobile-filter-actions { display: flex; }
+
+    /* Ocultar sidebar inteiro no mobile (filtros ficam no modal) */
+    .sidebar { display: none !important; }
+
+    /* Botoes das acoes (Editar / Excluir) viram botoes reais do mesmo tamanho */
+    .table-wrap td.actions,
+    .table-wrap td[class="actions"] {
+        display: flex !important;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding-top: 10px;
+        border-top: 1px solid #f1f5f9;
+        margin-top: 4px;
+    }
+
+    .table-wrap td.actions a,
+    .table-wrap td.actions .link-button,
+    .table-wrap td.actions button.link-button {
+        flex: 1 1 0;
+        min-width: 0;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 14px;
+        border-radius: var(--radius-md);
+        font-size: 14px;
+        font-weight: 700;
+        text-decoration: none !important;
+        white-space: nowrap;
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+        transition: var(--transition);
+        /* Editar: verde teal */
+        background: var(--color-primary-teal);
+        color: #fff;
+    }
+
+    .table-wrap td.actions .link-button,
+    .table-wrap td.actions button.link-button {
+        /* Excluir: vermelho */
+        background: var(--color-danger);
+        color: #fff;
+    }
+
+    .table-wrap td.actions a:hover { background: var(--color-primary-teal-d); }
+    .table-wrap td.actions .link-button:hover,
+    .table-wrap td.actions button.link-button:hover {
+        background: var(--color-danger-dark);
+        text-decoration: none !important;
+    }
+
+    /* Remove o ::before das acoes (sem label) */
+    .table-wrap td.actions::before { display: none !important; }
+}
+
+/* Modal apenas no mobile */
+@media (min-width: 601px) {
+    /* No desktop, o modal nunca aparece (backdrop e modal ficam ocultos) */
+    .filter-modal-backdrop,
+    .filter-modal { display: none !important; }
+
+    /* Sidebar visivel normalmente */
+    .sidebar { display: flex !important; }
+    .sidebar-desktop-only { display: block; }
+}

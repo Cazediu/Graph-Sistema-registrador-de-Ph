@@ -191,6 +191,14 @@ $resultado = mysqli_stmt_get_result($stmt);
         <div class="search-section">
           <label for="amostra-search">Pesquisar amostra</label>
           <input id="amostra-search" type="search" placeholder="Digite a amostra" value="<?php echo htmlspecialchars($amostra); ?>">
+          <!-- Botões rápidos de filtro — visíveis apenas em mobile -->
+          <div class="mobile-filter-actions">
+              <button type="button" class="btn btn-filter-open" id="btn-abrir-filtros">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4h18M7 8h10M11 12h2"/></svg>
+                  Filtros
+              </button>
+              <a class="btn btn-clear-filters" href="admin_medicoes.php">Limpar filtros</a>
+          </div>
         </div>
 
         <div class="table-wrap admin-table-wrap">
@@ -247,9 +255,11 @@ $resultado = mysqli_stmt_get_result($stmt);
         </div>
       </main>
       <aside class="sidebar">
-        <section class="filter-panel">
+        <!-- Sidebar de filtros: visível apenas no desktop -->
+        <div class="sidebar-desktop-only">
+        <section class="filter-panel" id="filter-panel-desktop">
           <h3>Filtros</h3>
-          <form method="GET">
+          <form method="GET" id="form-filtros-desktop">
             <input type="hidden" id="amostra-filter" name="amostra" value="<?php echo htmlspecialchars($amostra); ?>">
             <div class="filters-grid">
               <div class="filter-group">
@@ -269,9 +279,8 @@ $resultado = mysqli_stmt_get_result($stmt);
               <div class="filter-group full-width">
                 <label>Observação</label>
                 <input type="text" name="observacao" placeholder="Digite uma observação" value="<?php echo htmlspecialchars($observacao); ?>" <?php echo $sem_observacao ? 'disabled' : ''; ?>>
-                <label style="display:inline-flex;align-items:center;gap:2px;margin-top:2px;font-weight:500;font-size:12px;line-height:1.1;">
-                  <input type="checkbox" name="sem_observacao" value="1" style="margin:0;width:12px;height:12px;" <?php echo $sem_observacao ? 'checked' : ''; ?>>
-                  Buscar itens sem observação
+                <label style="display:inline-flex;align-items:center;gap:6px;margin-top:6px;font-weight:500;font-size:13px;">
+                  <input type="checkbox" name="sem_observacao" value="1" <?php echo $sem_observacao ? 'checked' : ''; ?>> Buscar itens sem observação
                 </label>
               </div>
               <div class="dependent-filters-box">
@@ -285,7 +294,7 @@ $resultado = mysqli_stmt_get_result($stmt);
                 </div>
                 <div class="filter-group full-width" id="grupo-pesquisa-responsavel" style="margin-top: 12px;">
                   <label>Pesquisar responsável</label>
-                  <input type="text" name="responsavel_nome" placeholder="Digite o nome do responsável" value="<?php echo htmlspecialchars($responsavel_nome); ?>" style="margin-bottom: 0;">
+                  <input type="text" name="responsavel_nome" placeholder="Digite o nome do responsável" value="<?php echo htmlspecialchars($responsavel_nome); ?>">
                 </div>
               </div>
               <div class="filter-group">
@@ -313,83 +322,162 @@ $resultado = mysqli_stmt_get_result($stmt);
             </div>
           </form>
         </section>
+        </div><!-- /sidebar-desktop-only -->
       </aside>
     </div>
   </div>
-  <script>
-  document.addEventListener('DOMContentLoaded', function () {
-      const topSearch = document.getElementById('amostra-search');
-      const filterForm = document.querySelector('.filter-panel form');
-      const amostraField = filterForm ? filterForm.querySelector('#amostra-filter') : null;
-      const observacaoInput = filterForm ? filterForm.querySelector('input[name="observacao"]') : null;
-      const semObservacaoCheckbox = filterForm ? filterForm.querySelector('input[name="sem_observacao"]') : null;
-      let debounceTimer;
+<!-- ===== MODAL DE FILTROS (mobile) ===== -->
+<div class="filter-modal-backdrop" id="filter-modal-backdrop" aria-hidden="true"></div>
+<div class="filter-modal" id="filter-modal" role="dialog" aria-modal="true" aria-label="Filtros">
+    <div class="filter-modal-header">
+        <h3>Filtros</h3>
+        <button type="button" class="filter-modal-close" id="btn-fechar-filtros" aria-label="Fechar filtros">&#x2715;</button>
+    </div>
+    <div class="filter-modal-body">
+        <form method="GET" id="form-filtros-mobile">
+            <input type="hidden" id="amostra-filter-mobile" name="amostra" value="<?php echo htmlspecialchars($amostra); ?>">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label>Valor pH</label>
+                    <div class="split-inputs">
+                        <input type="number" step="0.01" min="0" max="14" name="valor_ph_min" placeholder="Mínimo" value="<?php echo htmlspecialchars($valor_ph_min); ?>">
+                        <input type="number" step="0.01" min="0" max="14" name="valor_ph_max" placeholder="Máximo" value="<?php echo htmlspecialchars($valor_ph_max); ?>">
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label>Temperatura (°C)</label>
+                    <div class="split-inputs">
+                        <input type="number" step="0.1" name="temperatura_min" placeholder="Mínimo" value="<?php echo htmlspecialchars($temperatura_min); ?>">
+                        <input type="number" step="0.1" name="temperatura_max" placeholder="Máximo" value="<?php echo htmlspecialchars($temperatura_max); ?>">
+                    </div>
+                </div>
+                <div class="filter-group full-width">
+                    <label>Observação</label>
+                    <input id="observacao-filter-mobile" type="text" name="observacao" placeholder="Digite uma observação" value="<?php echo htmlspecialchars($observacao); ?>" <?php echo $sem_observacao ? 'disabled' : ''; ?>>
+                    <label style="display:inline-flex;align-items:center;gap:6px;margin-top:6px;font-weight:500;font-size:13px;">
+                        <input type="checkbox" name="sem_observacao" value="1" <?php echo $sem_observacao ? 'checked' : ''; ?>> Buscar itens sem observação
+                    </label>
+                </div>
+                <div class="dependent-filters-box">
+                    <div class="filter-group">
+                        <label>Responsável</label>
+                        <select name="responsavel">
+                            <option value="todas" <?php echo $responsavel === 'todas' ? 'selected' : ''; ?>>Todas</option>
+                            <option value="minhas" <?php echo $responsavel === 'minhas' ? 'selected' : ''; ?>>Minhas medições</option>
+                            <option value="outras" <?php echo $responsavel === 'outras' ? 'selected' : ''; ?>>Medições de outros</option>
+                        </select>
+                    </div>
+                    <div class="filter-group full-width" id="grupo-pesquisa-responsavel-mobile" style="margin-top:12px;">
+                        <label>Pesquisar responsável</label>
+                        <input type="text" name="responsavel_nome" placeholder="Digite o nome do responsável" value="<?php echo htmlspecialchars($responsavel_nome); ?>">
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label>Data da medição</label>
+                    <div class="date-range">
+                        <span>de</span>
+                        <input type="date" name="data_medicao_inicio" value="<?php echo htmlspecialchars($data_medicao_inicio); ?>">
+                        <span>até</span>
+                        <input type="date" name="data_medicao_fim" value="<?php echo htmlspecialchars($data_medicao_fim); ?>">
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label>Data de modificação</label>
+                    <div class="date-range">
+                        <span>de</span>
+                        <input type="date" name="data_modificacao_inicio" value="<?php echo htmlspecialchars($data_modificacao_inicio); ?>">
+                        <span>até</span>
+                        <input type="date" name="data_modificacao_fim" value="<?php echo htmlspecialchars($data_modificacao_fim); ?>">
+                    </div>
+                </div>
+            </div>
+            <div class="buttons">
+                <button class="btn" type="submit">Filtrar</button>
+                <a class="btn-secondary" href="admin_medicoes.php">Limpar filtros</a>
+            </div>
+        </form>
+    </div>
+</div>
 
-      if (!topSearch || !filterForm || !amostraField) {
-          return;
-      }
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const topSearch      = document.getElementById('amostra-search');
+    const filterFormDesk = document.getElementById('form-filtros-desktop');
+    const filterFormMob  = document.getElementById('form-filtros-mobile');
+    const modal          = document.getElementById('filter-modal');
+    const backdrop       = document.getElementById('filter-modal-backdrop');
+    const btnAbrir       = document.getElementById('btn-abrir-filtros');
+    const btnFechar      = document.getElementById('btn-fechar-filtros');
+    let debounceTimer;
 
-      const syncObservacaoFilter = () => {
-          if (observacaoInput && semObservacaoCheckbox) {
-              observacaoInput.disabled = semObservacaoCheckbox.checked;
-          }
-      };
+    function openModal()  { modal.classList.add('open'); backdrop.classList.add('open'); document.body.style.overflow = 'hidden'; }
+    function closeModal() { modal.classList.remove('open'); backdrop.classList.remove('open'); document.body.style.overflow = ''; }
+    if (btnAbrir)  btnAbrir.addEventListener('click', openModal);
+    if (btnFechar) btnFechar.addEventListener('click', closeModal);
+    if (backdrop)  backdrop.addEventListener('click', closeModal);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-      syncObservacaoFilter();
-      if (semObservacaoCheckbox) {
-          semObservacaoCheckbox.addEventListener('change', syncObservacaoFilter);
-      }
+    function setupObservacaoToggle(form) {
+        if (!form) return;
+        const obs = form.querySelector('[name="observacao"]');
+        const sem = form.querySelector('[name="sem_observacao"]');
+        if (!obs || !sem) return;
+        const sync = () => { obs.disabled = sem.checked; };
+        sync(); sem.addEventListener('change', sync);
+    }
+    setupObservacaoToggle(filterFormDesk);
+    setupObservacaoToggle(filterFormMob);
 
-      const responsavelSelect = filterForm ? filterForm.querySelector('[name="responsavel"]') : null;
-      const grupoPesquisaResponsavel = document.getElementById('grupo-pesquisa-responsavel');
-      if (responsavelSelect && grupoPesquisaResponsavel) {
-          const syncResponsavelFilter = () => {
-              if (responsavelSelect.value === 'minhas') {
-                  grupoPesquisaResponsavel.style.display = 'none';
-              } else {
-                  grupoPesquisaResponsavel.style.display = '';
-              }
-          };
-          syncResponsavelFilter();
-          responsavelSelect.addEventListener('change', syncResponsavelFilter);
-      }
+    function setupResponsavelFilter(form, grupoId) {
+        if (!form) return;
+        const sel   = form.querySelector('[name="responsavel"]');
+        const grupo = document.getElementById(grupoId);
+        if (!sel || !grupo) return;
+        const sync = () => { grupo.style.display = sel.value === 'minhas' ? 'none' : ''; };
+        sync(); sel.addEventListener('change', sync);
+    }
+    setupResponsavelFilter(filterFormDesk, 'grupo-pesquisa-responsavel');
+    setupResponsavelFilter(filterFormMob,  'grupo-pesquisa-responsavel-mobile');
 
-      const updateResults = async () => {
-          const params = new URLSearchParams(new FormData(filterForm));
-          params.set('amostra', topSearch.value);
-          amostraField.value = topSearch.value;
+    function getActiveForm() {
+        if (modal && modal.classList.contains('open')) return filterFormMob;
+        return filterFormDesk || filterFormMob;
+    }
 
-          try {
-              const response = await fetch(window.location.pathname + '?' + params.toString(), {
-                  headers: { 'X-Requested-With': 'XMLHttpRequest' },
-                  cache: 'no-store'
-              });
+    function ensureAmostraField(form, id) {
+        if (!form) return null;
+        let f = form.querySelector('[name="amostra"]');
+        if (!f) { f = document.createElement('input'); f.type='hidden'; f.name='amostra'; f.id=id; form.appendChild(f); }
+        return f;
+    }
+    ensureAmostraField(filterFormDesk, 'amostra-filter');
+    ensureAmostraField(filterFormMob,  'amostra-filter-mobile');
 
-              if (!response.ok) {
-                  throw new Error('Falha ao buscar resultados.');
-              }
+    const updateResults = async (form) => {
+        if (!form || !topSearch) return;
+        const af = form.querySelector('[name="amostra"]');
+        if (af) af.value = topSearch.value;
+        const params = new URLSearchParams(new FormData(form));
+        params.set('amostra', topSearch.value);
+        try {
+            const res  = await fetch(window.location.pathname + '?' + params.toString(), { headers: { 'X-Requested-With': 'XMLHttpRequest' }, cache: 'no-store' });
+            if (!res.ok) throw new Error('Erro');
+            const text = await res.text();
+            const doc  = new DOMParser().parseFromString(text, 'text/html');
+            const nb   = doc.querySelector('.table-wrap table tbody');
+            const cb   = document.querySelector('.table-wrap table tbody');
+            if (nb && cb) cb.innerHTML = nb.innerHTML;
+        } catch(err) { console.error(err); form.submit(); }
+    };
 
-              const text = await response.text();
-              const parser = new DOMParser();
-              const doc = parser.parseFromString(text, 'text/html');
-              const newBody = doc.querySelector('.table-wrap table tbody');
-              const resultsBody = document.querySelector('.table-wrap table tbody');
-
-              if (newBody && resultsBody) {
-                  resultsBody.innerHTML = newBody.innerHTML;
-              }
-          } catch (error) {
-              console.error(error);
-              filterForm.submit();
-          }
-      };
-
-      topSearch.addEventListener('input', function () {
-          clearTimeout(debounceTimer);
-          debounceTimer = setTimeout(updateResults, 350);
-      });
-  });
-  </script>
+    if (topSearch) {
+        topSearch.addEventListener('input', () => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => updateResults(getActiveForm()), 350);
+        });
+    }
+});
+</script>
 <?php include 'footer.php'; ?>
 </body>
 </html>
